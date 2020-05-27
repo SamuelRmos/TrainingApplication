@@ -1,9 +1,10 @@
-package com.example.starwarscharacters.view
+package com.example.starwarscharacters.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.starwarscharacters.R
 import com.example.starwarscharacters.databinding.ActivityMainBinding
+import com.example.starwarscharacters.view.fragment.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment() {
-        supportFragmentManager.findFragmentById(R.id.frame_layout) as MainFragment
+        supportFragmentManager.findFragmentById(R.id.frame_layout) as MainFragment?
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.frame_layout,
