@@ -38,7 +38,6 @@ class MainViewModel(
                     }
 
                     setLoadingVisibility(false)
-
                 } catch (e: Exception) {
 
                     setLoadingVisibility(false)
