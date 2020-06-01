@@ -1,3 +1,3 @@
 package com.example.starwarscharacters.di
 
-val appComponent = listOf(ApiDependency, RepositoryDependency)
+val appComponent = listOf(ApiDependency, RepositoryDependency, PersistenceDependency)

@@ -1,15 +1,20 @@
 package com.example.starwarscharacters.repository
 
+import com.example.starwarscharacters.db.PeopleDao
 import com.example.starwarscharacters.model.People
 import com.example.starwarscharacters.network.MainApiService
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class MainRepository : KoinComponent {
+class MainRepository constructor(private val peopleDao: PeopleDao) : KoinComponent {
 
     private val mainApiService: MainApiService by inject()
+    private val peopleList = peopleDao.getPeopleList()
 
-    suspend fun getData() = dataFetchLogic()
+    suspend fun getData() = when {
+        peopleList.isEmpty() -> dataFetchLogic()
+        else -> peopleDao.getPeopleList()
+    }
 
     private suspend fun dataFetchLogic(): MutableList<People> {
 
@@ -18,6 +23,7 @@ class MainRepository : KoinComponent {
         }
 
         val dataReceived = mainApiService.getPeopleData().results.toMutableList()
+        peopleDao.insertPeopleList(dataReceived)
 
         for (x in 0 until 3) {
             println(" Data manipulation post REST API request if required $x")

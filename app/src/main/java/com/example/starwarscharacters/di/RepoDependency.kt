@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 val RepositoryDependency = module {
     factory {
-        MainRepository()
+        MainRepository(get())
     }
 }

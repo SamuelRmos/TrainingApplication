@@ -14,16 +14,13 @@ import com.example.starwarscharacters.R
 import com.example.starwarscharacters.base.BaseUITest
 import com.example.starwarscharacters.di.generateTestAppComponent
 import com.example.starwarscharacters.helpers.recyclerItemAtPosition
-import com.example.starwarscharacters.repository.MainRepository
 import com.example.starwarscharacters.view.activity.MainActivity
 import com.example.starwarscharacters.view.adapter.MainRecyclerViewAdapter
-import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.loadKoinModules
-import org.koin.test.inject
 import java.net.HttpURLConnection
 
 @RunWith(AndroidJUnit4::class)
