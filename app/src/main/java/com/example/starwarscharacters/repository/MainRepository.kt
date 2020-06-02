@@ -12,7 +12,7 @@ class MainRepository constructor(private val peopleDao: PeopleDao) : KoinCompone
     private val peopleList = peopleDao.getPeopleList()
 
     suspend fun getData() = when {
-        peopleList.isEmpty() -> dataFetchLogic()
+        peopleList.isEmpty() || peopleList.size == 0 -> dataFetchLogic()
         else -> peopleDao.getPeopleList()
     }
 

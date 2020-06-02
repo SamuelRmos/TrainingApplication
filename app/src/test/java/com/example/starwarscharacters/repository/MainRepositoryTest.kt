@@ -4,9 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.starwarscharacters.base.BaseTest
 import com.example.starwarscharacters.db.PeopleDao
 import com.example.starwarscharacters.di.configureTestAppComponent
+import com.example.starwarscharacters.model.People
+import com.example.starwarscharacters.utils.MockTestUtil.mockPeopleList
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -30,8 +34,7 @@ class MainRepositoryTest : BaseTest() {
 
     private lateinit var sut: MainRepository
 
-    @MockK
-    private lateinit var peopleDao: PeopleDao
+    private val peopleDao = mockk<PeopleDao>(relaxed = true)
 
     private val mName = "Luke Skywalker"
     private val mHeight = "172"
@@ -42,14 +45,32 @@ class MainRepositoryTest : BaseTest() {
     @Before
     fun setup() {
         super.setUp()
-        MockKAnnotations.init(this)
         startKoin { modules(configureTestAppComponent(getMockWebServerUrl())) }
-        sut = MainRepository(peopleDao)
     }
 
     @Test
     fun `mainRepo retrieveData success`() = runBlocking {
+
+        every { peopleDao.getPeopleList() } returns mutableListOf()
+        sut = MainRepository(peopleDao)
+
         mockNetworkResponseWithFileContent("success_resp_list", HttpURLConnection.HTTP_OK)
+
+        val dataReceived = sut.getData()
+
+        assertNotNull(dataReceived)
+        assertEquals(dataReceived[0].name, mName)
+        assertEquals(dataReceived[0].height, mHeight)
+        assertEquals(dataReceived[0].mass, mMass)
+    }
+
+    @Test
+    fun `mainRepo data from Dao success`() = runBlocking {
+
+        val peopleList = mockPeopleList()
+        every { peopleDao.getPeopleList() } returns peopleList
+
+        sut = MainRepository(peopleDao)
         val dataReceived = sut.getData()
 
         assertNotNull(dataReceived)
