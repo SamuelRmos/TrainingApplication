@@ -51,11 +51,10 @@ class MainRepositoryTest : BaseTest() {
     @Test
     fun `mainRepo retrieveData success`() = runBlocking {
 
-        every { peopleDao.getPeopleList() } returns mutableListOf()
-        sut = MainRepository(peopleDao)
-
         mockNetworkResponseWithFileContent("success_resp_list", HttpURLConnection.HTTP_OK)
 
+        every { peopleDao.getPeopleList() } returns mutableListOf()
+        sut = MainRepository(peopleDao)
         val dataReceived = sut.getData()
 
         assertNotNull(dataReceived)

@@ -19,7 +19,7 @@ class DaoTest : AppDatabase() {
     }
 
     @Test
-    fun insertPeople_SavesData() {
+    fun peopleDao_insertPeople() {
         val cachedPeople = BufferFactory.makeCachedPeople()
         peopleDao.insertPeopleList(cachedPeople)
 
