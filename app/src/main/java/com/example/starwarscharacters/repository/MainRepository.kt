@@ -1,33 +1,32 @@
 package com.example.starwarscharacters.repository
 
+import com.example.starwarscharacters.base.BaseRepository
 import com.example.starwarscharacters.db.PeopleDao
 import com.example.starwarscharacters.model.People
 import com.example.starwarscharacters.network.MainApiService
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class MainRepository constructor(private val peopleDao: PeopleDao) : KoinComponent {
+class MainRepository(
+    private val peopleDao: PeopleDao,
+    private val mainApiService: MainApiService
+) : BaseRepository(), Repository {
 
-    private val mainApiService: MainApiService by inject()
     private val peopleList = peopleDao.getPeopleList()
 
-    suspend fun getData() = when {
-        peopleList.isEmpty() || peopleList.size == 0 -> dataFetchLogic()
+    override suspend fun getData() = when (peopleList.size) {
+        0 -> dataFetchLogic()
         else -> peopleDao.getPeopleList()
     }
 
-    private suspend fun dataFetchLogic(): MutableList<People> {
+    override suspend fun dataFetchLogic(): MutableList<People> {
+        val data = safeApiCall(
+            call = { mainApiService.getPeopleDataAsync() },
+            errorMessage = "Error Fetching Data from API"
+        )
 
-        for (x in 0 until 3) {
-            println(" Data manipulation prior to REST API request if required $x")
-        }
-
-        val dataReceived = mainApiService.getPeopleData().results.toMutableList()
+        val dataReceived = data?.results!!.toMutableList()
         peopleDao.insertPeopleList(dataReceived)
 
-        for (x in 0 until 3) {
-            println(" Data manipulation post REST API request if required $x")
-        }
         return dataReceived
     }
+
 }

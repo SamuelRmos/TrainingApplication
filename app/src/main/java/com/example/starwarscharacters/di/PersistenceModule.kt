@@ -6,7 +6,7 @@ import com.example.starwarscharacters.model.AppDataBase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-val PersistenceDependency = module {
+val PersistenceModule = module {
     single {
         Room.databaseBuilder(
             androidApplication(), AppDataBase::class.java, androidApplication().getString(
