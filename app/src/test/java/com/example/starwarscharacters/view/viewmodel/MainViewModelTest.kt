@@ -1,10 +1,11 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.starwarscharacters.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.starwarscharacters.base.BaseTest
 import com.example.starwarscharacters.base.LiveDataWrapper
 import com.example.starwarscharacters.di.configureTestAppComponent
-import com.example.starwarscharacters.model.People
 import com.example.starwarscharacters.model.PeopleResult
 import com.example.starwarscharacters.repository.MainRepository
 import com.google.gson.Gson
@@ -12,6 +13,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -44,7 +46,6 @@ class MainViewModelTest : BaseTest() {
     @Before
     fun setup() {
         super.setUp()
-
         MockKAnnotations.init(this)
         startKoin { modules(configureTestAppComponent(getMockWebServerUrl())) }
         sut = MainViewModel(mDispatcher, mDispatcher, mMainRepository)
@@ -56,13 +57,15 @@ class MainViewModelTest : BaseTest() {
         val jsonObj = Gson().fromJson(sampleResponse, PeopleResult::class.java)
 
         coEvery { mMainRepository.getData() } returns jsonObj.results.toMutableList()
-        sut.mPeopleResponse.observeForever {  }
+        sut.mPeopleResponse.observeForever { }
 
         sut.requestData()
 
-        assert(sut.mPeopleResponse.value != null)
-        assert(sut.mPeopleResponse.value!!.responseStatus
-                == LiveDataWrapper.ResponseStatus.SUCCESS)
+        assertNotNull(sut.mPeopleResponse.value)
+        assertEquals(
+            sut.mPeopleResponse.value!!.responseStatus,
+            LiveDataWrapper.ResponseStatus.SUCCESS
+        )
 
         val testResult = sut.mPeopleResponse.value
 

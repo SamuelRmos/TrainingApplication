@@ -54,7 +54,8 @@ class MainRepositoryTest : BaseTest() {
         mockNetworkResponseWithFileContent("success_resp_list", HttpURLConnection.HTTP_OK)
 
         every { peopleDao.getPeopleList() } returns mutableListOf()
-        sut = MainRepository(peopleDao)
+        sut = MainRepository(peopleDao, createApi())
+
         val dataReceived = sut.getData()
 
         assertNotNull(dataReceived)
@@ -69,7 +70,7 @@ class MainRepositoryTest : BaseTest() {
         val peopleList = mockPeopleList()
         every { peopleDao.getPeopleList() } returns peopleList
 
-        sut = MainRepository(peopleDao)
+        sut = MainRepository(peopleDao, createApi())
         val dataReceived = sut.getData()
 
         assertNotNull(dataReceived)

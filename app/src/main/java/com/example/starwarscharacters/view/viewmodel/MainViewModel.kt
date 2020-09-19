@@ -4,17 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.starwarscharacters.base.LiveDataWrapper
 import com.example.starwarscharacters.model.People
-import com.example.starwarscharacters.model.PeopleResult
 import com.example.starwarscharacters.repository.MainRepository
 import kotlinx.coroutines.*
 import org.koin.core.KoinComponent
-import java.lang.Exception
 
 class MainViewModel(
     mainDispatcher: CoroutineDispatcher,
     ioDispatcher: CoroutineDispatcher,
     private val mainRepo: MainRepository
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     var mPeopleResponse = MutableLiveData<LiveDataWrapper<People>>()
     val mLoadingLiveData = MutableLiveData<Boolean>()
@@ -25,7 +23,7 @@ class MainViewModel(
     fun requestData() {
         if (mPeopleResponse.value == null) {
             mUiScope.launch {
-                mPeopleResponse.value = LiveDataWrapper.loading()
+                mPeopleResponse.postValue(LiveDataWrapper.loading())
                 setLoadingVisibility(true)
                 try {
                     val data = mIoScope.async {
@@ -33,7 +31,7 @@ class MainViewModel(
                     }.await()
 
                     try {
-                        mPeopleResponse.value = LiveDataWrapper.success(data)
+                        mPeopleResponse.postValue(LiveDataWrapper.success(data))
                     } catch (e: Exception) {
                     }
 
@@ -41,7 +39,7 @@ class MainViewModel(
                 } catch (e: Exception) {
 
                     setLoadingVisibility(false)
-                    mPeopleResponse.value = LiveDataWrapper.error(e)
+                    mPeopleResponse.postValue(LiveDataWrapper.error(e))
                 }
             }
         }

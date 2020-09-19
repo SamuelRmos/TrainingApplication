@@ -1,17 +1,14 @@
 package com.example.starwarscharacters.view.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.starwarscharacters.databinding.ItemLayoutBinding
 import com.example.starwarscharacters.model.People
-import java.util.*
 
-class MainRecyclerViewAdapter(val context: Context, list: MutableList<People>) :
+class MainRecyclerViewAdapter(private var list: MutableList<People>) :
     RecyclerView.Adapter<MainRecyclerViewAdapter.MainViewHolder>() {
 
-    var mList = list
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
@@ -22,20 +19,20 @@ class MainRecyclerViewAdapter(val context: Context, list: MutableList<People>) :
     }
 
     fun updateListItems(updateList: MutableList<People>) {
-        mList.clear()
-        mList = updateList
+        list.clear()
+        list = updateList
         notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        val item = mList[position]
+        val item = list[position]
         holder.apply {
             bind(item)
             itemView.tag = position
         }
     }
 
-    override fun getItemCount(): Int = mList.size
+    override fun getItemCount(): Int = list.size
 
     class MainViewHolder(private val binding: ItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,4 +43,5 @@ class MainRecyclerViewAdapter(val context: Context, list: MutableList<People>) :
             }
         }
     }
+
 }

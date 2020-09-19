@@ -1,11 +1,15 @@
 package com.example.starwarscharacters.base
 
+import com.example.starwarscharacters.network.MainApiService
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
 abstract class BaseTest : KoinTest {
@@ -38,6 +42,13 @@ abstract class BaseTest : KoinTest {
     }
 
     fun getMockWebServerUrl() = mMockServerInstance.url("/").toString()
+
+    fun createApi(): MainApiService = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .baseUrl(getMockWebServerUrl())
+        .build()
+        .create(MainApiService::class.java)
 
     private fun stopMockServer() {
         if (mShouldStart)
